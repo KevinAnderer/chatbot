@@ -12,7 +12,7 @@ import { genericTextConversation } from '../interfaces/genericTextConversation';
 export class ChatbotComponent implements OnInit {
   messages = [];
   loading = false;
-  greeting: string;
+  eventResponse: string;
   startEvent = [
     {
       name: 'greeting',
@@ -28,10 +28,11 @@ export class ChatbotComponent implements OnInit {
   }
 
   async handleUserMessage(event) {
-    console.log(event);
+    console.log('handleUserMessage', event);
+
+    const text = event.message;
     let textEvent = [
       {
-        name: 'greeting',
         payload: {
           eventCategory: 'test',
           eventAction: 'test',
@@ -39,23 +40,21 @@ export class ChatbotComponent implements OnInit {
         },
         tpKey: 'de',
         scope: 'event',
+        text: text,
       },
     ];
-    const text = event.message;
-    this.sendEvent(this.startEvent);
-
     this.addUserMessage(text);
+
     this.loading = true;
     await timer(1000).pipe(take(1)).toPromise();
-
-    this.addBotMessage('Cool');
+    this.sendEvent(textEvent);
     this.loading = false;
   }
 
   addUserMessage(text) {
     this.messages.push({
       text,
-      sender: 'You',
+      sender: 'Du',
       reply: true,
       date: new Date(),
     });
@@ -75,8 +74,19 @@ export class ChatbotComponent implements OnInit {
       .find(events, '/action')
       .subscribe((event: genericTextConversation[]) => {
         console.log('bricks from event api', event);
-        this.greeting = event[0].content.data.title;
-        this.addBotMessage(this.greeting);
+        let limit = 0;
+        event.forEach((e) => {
+          this.eventResponse = e.content.data.title;
+          this.addBotMessage(this.eventResponse);
+          this.loading = false;
+        });
+        if (event.length === 0 && limit < 3) {
+          limit += 1;
+          this.sendEvent(events);
+          // this.addBotMessage(
+          //   'Huch scheint so als hätte ich kurz die Verbindung verloren, können Sie das bitte nochmals wiederholen?'
+          // );
+        }
       });
   }
 }

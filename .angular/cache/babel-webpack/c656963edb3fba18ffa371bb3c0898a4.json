@@ -1,0 +1,1 @@
+{"ast":null,"code":"export class Message {\n  constructor(message, title) {\n    this.message = message;\n    this.title = title;\n  }\n\n  static createMessage(message, title) {\n    console.log('MESSAGE_CREATE', typeof message);\n    console.log(message);\n    return new Message(message, title);\n  }\n\n}","map":null,"metadata":{},"sourceType":"module"}
