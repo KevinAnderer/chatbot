@@ -1,15 +1,26 @@
 <nb-chat title="Conversation with a Chatbot">
+  <div *nbCustomMessage="'button'; let data">
+    <button nbButton (click)="onSubmitClick(data._id)">
+      {{ data.name }}
+    </button>
+  </div>
   <nb-chat-message
     *ngFor="let msg of messages"
-    type="text"
-    [message]="msg.text"
+    [type]="msg.type"
+    [message]="msg.type === 'button' ? '' : msg.text"
     [reply]="msg.reply"
     [sender]="msg.sender"
     [avatar]="msg.avatar"
+    [customMessageData]="{
+      name: msg.name,
+      _id: msg._id,
+      sender: msg.sender
+    }"
   ></nb-chat-message>
   <nb-chat-message
     class="test"
     *ngIf="loading"
+    [avatar]="messages[0].avatar"
     [nbSpinner]="loading"
     nbSpinnerStatus="info"
     type="text"

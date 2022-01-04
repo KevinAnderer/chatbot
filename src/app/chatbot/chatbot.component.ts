@@ -1,6 +1,6 @@
+import { identifierName } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { timer } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { timer, take } from 'rxjs';
 import { ApiControllerService } from '../controller/api-controller.service';
 import { genericTextConversation } from '../interfaces/genericTextConversation';
 
@@ -12,22 +12,22 @@ import { genericTextConversation } from '../interfaces/genericTextConversation';
 export class ChatbotComponent implements OnInit {
   messages = [];
   loading = false;
-  eventResponse: string;
   startEvent = [
     {
       name: 'greeting',
-      payload: { eventCategory: 'test', eventAction: 'test', source: 'test' },
+      payload: { eventCategory: 'test', eventAction: 'test' },
       tpKey: 'de',
       scope: 'event',
     },
   ];
+  buttons = [];
   constructor(private readonly service: ApiControllerService) {}
-
   ngOnInit(): void {
     this.sendEvent(this.startEvent);
   }
 
   async handleUserMessage(event) {
+    // this.buttons = [];
     console.log('handleUserMessage', event);
 
     const text = event.message;
@@ -36,7 +36,6 @@ export class ChatbotComponent implements OnInit {
         payload: {
           eventCategory: 'test',
           eventAction: 'test',
-          source: 'test',
         },
         tpKey: 'de',
         scope: 'event',
@@ -44,29 +43,61 @@ export class ChatbotComponent implements OnInit {
       },
     ];
     this.addUserMessage(text);
-
     this.loading = true;
     await timer(1000).pipe(take(1)).toPromise();
     this.sendEvent(textEvent);
-    this.loading = false;
   }
 
-  addUserMessage(text) {
+  async addUserMessage(text) {
     this.messages.push({
       text,
       sender: 'Du',
       reply: true,
       date: new Date(),
     });
+    await timer(1).pipe(take(1)).toPromise();
+
+    window.scroll({
+      top: document.body.scrollHeight,
+      left: 0,
+      behavior: 'smooth',
+    });
   }
 
-  addBotMessage(text) {
+  async addBotMessage(text: string, type: string, name: string, id: string) {
     this.messages.push({
+      type,
       text,
       sender: 'BAICA',
       avatar: '/assets/chatbot.jpeg',
       date: new Date(),
+      name: name,
+      _id: id,
     });
+    await timer(1).pipe(take(1)).toPromise();
+
+    window.scroll({
+      top: document.body.scrollHeight,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }
+
+  onSubmitClick(id: string) {
+    this.buttons = [];
+    console.log(id);
+    let textEvent = [
+      {
+        payload: {
+          eventCategory: 'test',
+          eventAction: 'test',
+        },
+        tpKey: 'de',
+        scope: 'event',
+        suggestedOptions: { _id: id },
+      },
+    ];
+    this.sendEvent(textEvent);
   }
 
   private sendEvent(events: any) {
@@ -74,19 +105,27 @@ export class ChatbotComponent implements OnInit {
       .find(events, '/action')
       .subscribe((event: genericTextConversation[]) => {
         console.log('bricks from event api', event);
-        let limit = 0;
-        event.forEach((e) => {
-          this.eventResponse = e.content.data.title;
-          this.addBotMessage(this.eventResponse);
-          this.loading = false;
-        });
-        if (event.length === 0 && limit < 3) {
-          limit += 1;
+        if (event.length > 0) {
+          event.forEach((e) => {
+            let eventResponse = e.content.data.title;
+            let type = 'text';
+            this.addBotMessage(eventResponse, type, '', '');
+            this.loading = false;
+            if (e.suggestedOptions.length > 0) {
+              e.suggestedOptions.forEach((so) => {
+                type = 'button';
+                this.addBotMessage(eventResponse, type, so.name, so._id);
+              });
+            }
+          });
+        }
+        if (event.length === 0) {
           this.sendEvent(events);
-          // this.addBotMessage(
-          //   'Huch scheint so als hätte ich kurz die Verbindung verloren, können Sie das bitte nochmals wiederholen?'
-          // );
         }
       });
+  }
+
+  private login(events: any) {
+    this.service.find(events, '/test');
   }
 }

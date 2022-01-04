@@ -9,13 +9,17 @@ import {
   NbLayoutModule,
   NbSpinnerModule,
   NbChatModule,
+  NbButtonModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatbotComponent } from './chatbot/chatbot.component';
+import { MatButtonModule } from '@angular/material/button';
+import { HomeComponent } from './home/home.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
-  declarations: [AppComponent, ChatbotComponent],
+  declarations: [AppComponent, ChatbotComponent, HomeComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -26,6 +30,9 @@ import { ChatbotComponent } from './chatbot/chatbot.component';
     NbChatModule,
     NbSpinnerModule,
     HttpClientModule,
+    MatButtonModule,
+    NbButtonModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

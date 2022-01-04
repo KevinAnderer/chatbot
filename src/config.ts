@@ -4,7 +4,7 @@ export const ACCESS_TOKEN = 'access_token';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Config {
-  static readonly backendUrl = 'http://localhost:4568';
+  static readonly backendUrl = 'http://localhost:5000';
 
   // Header für Get-Requests
   static readonly getHeaders = new HttpHeaders()

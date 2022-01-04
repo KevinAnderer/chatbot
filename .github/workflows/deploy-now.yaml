@@ -32,7 +32,6 @@ jobs:
         if: ${{ steps.project.outputs.deployment-enabled == 'true' }}
         run: npm run build
         env:
-          CI: true
           SITE_URL: ${{ steps.project.outputs.site-url }}
       - name: Deploy build
         if: ${{ steps.project.outputs.deployment-enabled == 'true' }}

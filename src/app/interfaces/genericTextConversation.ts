@@ -6,7 +6,7 @@ export interface genericTextConversation {
   createdAt: Date;
   creator: string;
   scene: Scene;
-  suggestedOptions: SuggestedOptions;
+  suggestedOptions: SuggestedOptions[];
   topic: string;
   updatedAt: Date;
   _id: string;
@@ -23,4 +23,7 @@ export interface DataBai {
 
 export interface Scene {}
 
-export interface SuggestedOptions {}
+export interface SuggestedOptions {
+  name: string;
+  _id: string;
+}

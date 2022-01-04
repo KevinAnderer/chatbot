@@ -1,0 +1,26 @@
+<div class="home">
+  <div class="header">Website Mock</div>
+  <div class="content-wrapper">
+    <div class="content">
+      <div class="chatbot-wrapper">
+        <div class="chatbot">
+          <nb-layout [hidden]="!show">
+            <nb-layout-column>
+              <app-chatbot></app-chatbot>
+            </nb-layout-column>
+          </nb-layout>
+        </div>
+        <div class="chatbot-button">
+          <button
+            mat-fab
+            color="primary"
+            aria-label="Chatbot"
+            (click)="toggle()"
+          >
+            <mat-icon>wechat</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
